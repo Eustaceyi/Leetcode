@@ -50,3 +50,36 @@ class Solution:
         if not all(visited):
             return False
         return True
+
+class UF:
+    def __init__(self, N):
+        self.ids = [i for i in range(N)]
+        
+    def root(self, A):
+        while A != self.ids[A]:
+            self.ids[A] = self.ids[self.ids[A]]
+            A = self.ids[A]
+        return A
+    
+    def union(self, A, B):
+        i = self.root(A)
+        j = self.root(B)
+        self.ids[i] = j
+
+class Solution:
+    '''
+    UF solution
+    '''
+    def validTree(self, n: int, edges: List[List[int]]) -> bool:
+        if len(edges) != n-1:
+            return False
+        uf = UF(n)
+        for e1, e2 in edges:
+            r1 = uf.root(e1)
+            r2 = uf.root(e2)
+            
+            if r1 == r2: # if they are already connected before adding this edge, then after adding this, there must be circle in the graph
+                return False
+            
+            uf.union(e1, e2)
+        return True
