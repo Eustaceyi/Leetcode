@@ -58,40 +58,45 @@ class Solution:
             return False
         return True
 
-class Solution(object):
-    '''
-    Union find
-    '''
-    def numIslands(self, grid):
-        """
-        :type grid: List[List[str]]
-        :rtype: int
-        """
-        if len(grid) == 0: return 0
-        row = len(grid); col = len(grid[0])
-        self.count = sum(grid[i][j]=='1' for i in range(row) for j in range(col))
-        parent = [i for i in range(row*col)]
+class UF:
+    def __init__(self, N):
+        self.ids = [i for i in range(N)]
         
-        def find(x):
-            if parent[x]!= x:
-                return find(parent[x])
-            return parent[x]
-        
-        def union(x,y):
-            xroot, yroot = find(x),find(y)
-            if xroot == yroot: return 
-            parent[xroot] = yroot
-            self.count -= 1
-        
-        
-        
-        for i in range(row):
-            for j in range(col):
-                if grid[i][j] == '0':
-                    continue
-                index = i*col + j
-                if j < col-1 and grid[i][j+1] == '1':
-                    union(index, index+1)
-                if i < row-1 and grid[i+1][j] == '1':
-                    union(index, index+col)
-        return self.count
+    def root(self, A):
+        while A != self.ids[A]:
+            self.ids[A] = self.ids[self.ids[A]]
+            A = self.ids[A]
+        return A
+    def find(self, A, B):
+        return self.root(A) == self.root(B)
+    
+    def union(self, A, B):
+        i = self.root(A)
+        j = self.root(B)
+        self.ids[i] = j
+
+class Solution:
+    def numIslands(self, grid: List[List[str]]) -> int:
+        '''
+        Union Find
+        '''
+        if not grid:
+            return 0
+        seen = set()
+        m = len(grid)
+        n = len(grid[0])
+        uf = UF(m*n)
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == '1':
+
+                    if i<m-1 and grid[i+1][j] == '1':
+                        uf.union(i*n+j, (i+1)*n+j)
+
+                    if j<n-1 and grid[i][j+1] == '1':
+                        uf.union(i*n+j, i*n+j+1)
+        for i in range(m):
+            for j in range(n):
+                if grid[i][j] == '1' and uf.root(i*n+j) not in seen:
+                    seen.add(uf.root(i*n+j))
+        return len(seen)
