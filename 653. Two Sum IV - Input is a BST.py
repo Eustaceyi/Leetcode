@@ -28,3 +28,17 @@ class Solution:
                 lo += 1
         return False
                 
+class Solution:
+    def findTarget(self, root: TreeNode, k: int) -> bool:
+        s = set()
+        queue = [root]
+        while queue:
+            node = queue.pop(0)
+            if k - node.val in s:
+                return True
+            s.add(node.val)
+            if node.left:
+                queue.append(node.left)
+            if node.right:
+                queue.append(node.right)
+        return False
