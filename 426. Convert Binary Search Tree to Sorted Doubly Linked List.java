@@ -43,3 +43,39 @@ class Solution {
         }
     }
 }
+
+class Solution {
+    public Node treeToDoublyList(Node root) {
+        Deque<Node> stack = new LinkedList<>();
+        Deque<Node> dq = new LinkedList<>();
+        if (root==null) {
+            return root;
+        }
+        if (root.left == null && root.right == null) {
+            root.left = root;
+            root.right = root;
+            return root;
+        }
+        Node curr = root, node = null, prev = null, head=null;
+        while (curr != null || !stack.isEmpty()) {
+            while(curr != null) {
+                stack.push(curr);
+                curr = curr.left;
+            }
+            curr = stack.pop();
+            if (head==null) {
+                head = curr;
+            }
+            prev = node;
+            node = curr;
+            node.left = prev;
+            if (prev != null) {
+                prev.right = node;
+            }
+            curr = curr.right;
+        }
+        node.right = head;
+        head.left = node;
+        return head;
+    }
+}
