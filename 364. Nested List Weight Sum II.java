@@ -33,28 +33,30 @@
  */
 class Solution {
     public int depthSumInverse(List<NestedInteger> nestedList) {
+        if (nestedList==null) return 0;
         List<Integer> ans = new ArrayList<>();
         int sum = 0;
-        List<NestedInteger> next;
-        while (nestedList.size() > 0) {
-            next = new ArrayList<>();
-            for (NestedInteger i : nestedList) {
-                if (i.isInteger()) {
-                    sum += i.getInteger();
+        Deque<NestedInteger> dq = new ArrayDeque<>();
+        for (NestedInteger ni : nestedList) {
+            dq.offer(ni);
+        }
+        while (!dq.isEmpty()) {
+            int size = dq.size();
+            for (int i=0; i<size; i++) {
+                NestedInteger ni = dq.poll();
+                if (ni.isInteger()) {
+                    sum += ni.getInteger();
                 } else {
-                    next.addAll(i.getList());
+                    for (NestedInteger n : ni.getList()) {
+                        dq.offer(n);
+                    }
                 }
             }
             ans.add(sum);
-            nestedList = next;
         }
-        if (ans.size()==0) {
-            return 0;
-        } else {
-            sum = 0;
-            for (int i : ans) {
-                sum += i;
-            }
+        sum=0;
+        for (int n : ans) {
+            sum += n;
         }
         return sum;
     }
