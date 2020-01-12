@@ -28,3 +28,33 @@ class Solution {
         return ans;
     }
 }
+
+class Solution {
+    public List<String> removeComments(String[] source) {
+        List<String> ans = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        boolean in = false;
+        for (String s : source) {
+            int i=0, len = s.length();
+            while (i<len) {
+                if (!in && i+1<len && s.charAt(i) == '/' && s.charAt(i+1) == '*') {
+                    in = true;
+                    i++;
+                } else if (in && i+1<len && s.charAt(i) == '*' && s.charAt(i+1) == '/') {
+                    in = false;
+                    i++;
+                } else if (!in && i+1<len && s.charAt(i) == '/' && s.charAt(i+1) == '/') {
+                    break;
+                } else if (!in) {
+                    sb.append(s.charAt(i));
+                }
+                i++;
+            }
+            if (!in && sb.length()>0) {
+                ans.add(sb.toString());
+                sb.setLength(0);
+            }
+        }
+        return ans;
+    }
+}
